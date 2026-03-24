@@ -175,9 +175,72 @@ tr.hl-b { background: #f0fffd; }
 </table>
 </div>
 
+<h2>Data Sources & Methodology</h2>
+<div class="card" style="font-size:13px; line-height:1.7;">
+
+<h3 style="font-size:15px; color:var(--teal); margin-bottom:8px;">Weather Stations</h3>
+<table style="font-size:13px;">
+<tr><th>Station</th><th>Elevation</th><th>Distance to Selkirk</th><th>Data</th><th>Period</th></tr>
+<tr><td><strong>Rogers Pass</strong> (Glacier NP)</td><td>1,330m</td><td>~90km N, same range</td><td>Daily: temp, snow, precip, snow on ground</td><td>1990-2014</td></tr>
+<tr><td><strong>Duncan Lake Dam</strong></td><td>549m</td><td>~10km E</td><td>Daily: temp, snow, precip, snow on ground</td><td>2010-2025</td></tr>
+<tr><td><strong>Mt Revelstoke</strong> (2A06P)</td><td>1,850m</td><td>~60km NW</td><td>Hourly: SWE, snow depth, temp</td><td>1992-2011</td></tr>
+<tr><td><strong>East Creek</strong> (2D08P)</td><td>2,030m</td><td>~40km SE</td><td>Hourly: SWE, snow depth, temp</td><td>1980-2011</td></tr>
+<tr><td><strong>Fidelity Mountain</strong> (2A17)</td><td>1,870m</td><td>~90km N</td><td>Monthly: SWE, depth, density</td><td>1963-present</td></tr>
+<tr><td><strong>Meadow Mountain</strong> (2D13)</td><td>1,990m</td><td>On-mountain!</td><td>Monthly: SWE, depth, density</td><td>1993-1997 only</td></tr>
+</table>
+
+<p style="margin-top:12px;">Rogers Pass is the primary backbone (higher elevation, better snow data). Duncan Lake fills gaps from 2015 onward when Rogers Pass stopped reporting. Both stations' temperatures are normalized to a common valley-floor baseline, then adjusted upward to each elevation band using the lapse rate.</p>
+
+<h3 style="font-size:15px; color:var(--teal); margin: 16px 0 8px;">Elevation Model</h3>
+<p>Temperatures at each elevation band are estimated using an <strong>environmental lapse rate of 6.5C per 1,000m</strong> of elevation gain. This means when Duncan Lake Dam (549m) reads 0C:</p>
+<table style="font-size:13px;">
+<tr><td>Lodge (1,280m)</td><td><strong>-4.7C</strong></td><td>Usually cold enough for snow preservation</td></tr>
+<tr><td>A-Frame Ridge (1,900m)</td><td><strong>-8.8C</strong></td><td>Solidly in the dendritic growth zone</td></tr>
+<tr><td>Meadow Peak (2,560m)</td><td><strong>-13.1C</strong></td><td>Deep cold, excellent crystal quality</td></tr>
+</table>
+
+<p style="margin-top:8px;">Precipitation is enhanced by <strong>~8% per 100m elevation gain</strong> (orographic effect). Valley rain is converted to mountain snow when the lapse-rate-adjusted temperature is below 0C, using a temperature-dependent Snow-Liquid Ratio.</p>
+
+<h3 style="font-size:15px; color:var(--teal); margin: 16px 0 8px;">Snow Quality Score Components</h3>
+<table style="font-size:13px;">
+<tr><th>Component</th><th>What it measures</th><th>How it's calculated</th></tr>
+<tr><td><strong>Fresh Snow</strong></td><td>Recent snowfall in past 48 hours</td><td>Linear scale: 0cm = 0, 60cm+ = 100</td></tr>
+<tr><td><strong>Preservation</strong></td><td>Has the snow stayed cold since it fell?</td><td>Starts at 100 after snowfall. Degrades fast if max temp crosses 0C. Penalizes melt-freeze crust formation (warm then cold). Decays slowly even in cold conditions (metamorphism).</td></tr>
+<tr><td><strong>Crystal Quality</strong></td><td>Snow-Liquid Ratio at time of snowfall</td><td>Based on the Nakaya morphology diagram. -12 to -18C = best dendrites (SLR 16-20:1, score 100). Near 0C = wet cement (SLR 5-8:1, score &lt;30).</td></tr>
+<tr><td><strong>Base Depth</strong></td><td>Cumulative snowpack (rocks covered?)</td><td>Accumulation model: snow adds, warm days melt, daily 3% settlement. Score 100 when base exceeds threshold for elevation.</td></tr>
+<tr><td><strong>Safety</strong></td><td>Can you ski steep terrain?</td><td>Penalizes heavy 72-hour loading (storm slab risk) and warm events (wet avalanche risk). Used as a gate for "great" day classification.</td></tr>
+</table>
+
+<h3 style="font-size:15px; color:var(--teal); margin: 16px 0 8px;">Day Quality Classification</h3>
+<table style="font-size:13px;">
+<tr><td style="background:#2ecc71;color:white;font-weight:700;width:60px;text-align:center;">Great</td><td>Composite score >= threshold <strong>AND</strong> safety score >= safety threshold. Deep powder on steep, stable terrain. The days you tell stories about.</td></tr>
+<tr><td style="background:#4ecdc4;color:white;font-weight:700;text-align:center;">Good</td><td>Composite score >= good threshold. Solid skiing with fresh or well-preserved snow. You're happy.</td></tr>
+<tr><td style="background:#f7dc6f;color:white;font-weight:700;text-align:center;">OK</td><td>Composite score >= OK threshold. Skiable but not special. Older snow, some sun effect, heavier conditions.</td></tr>
+<tr><td style="background:#e74c3c;color:white;font-weight:700;text-align:center;">Poor</td><td>Below OK threshold. Crust, wet snow, thin coverage, or high hazard limiting terrain access.</td></tr>
+</table>
+
+<h3 style="font-size:15px; color:var(--teal); margin: 16px 0 8px;">Limitations</h3>
+<ul style="margin-left:20px;">
+<li><strong>No wind data</strong> in the current model. Wind breaks crystal structure and creates wind slabs. ERA5-Land reanalysis (downloading) will add this.</li>
+<li><strong>Elevation extrapolation</strong> uses a fixed lapse rate. Real conditions vary with inversions, cloud cover, and storm dynamics.</li>
+<li><strong>No direct Selkirk measurements</strong> after 1997 (when the Meadow Mountain snow course was discontinued). The model relies on proxy stations 10-90km away.</li>
+<li><strong>Snowfall estimation</strong> converts valley precipitation to mountain snow. Actual orographic enhancement varies storm-by-storm and can be 2-5x the simple 8%/100m estimate used here.</li>
+<li><strong>Avalanche hazard</strong> is a rough proxy based on loading rate and temperature. Real avalanche forecasting requires snowpack stratigraphy, weak layer tracking, and field observations.</li>
+</ul>
+
+<h3 style="font-size:15px; color:var(--teal); margin: 16px 0 8px;">Data Access</h3>
+<ul style="margin-left:20px;">
+<li><a href="https://climate.weather.gc.ca/historical_data/search_historic_data_e.html" target="_blank">Environment Canada Historical Climate Data</a> (bulk CSV download)</li>
+<li><a href="https://www2.gov.bc.ca/gov/content/environment/air-land-water/water/water-science-data/water-data-tools/snow-survey-data" target="_blank">BC Snow Survey Data</a> (snow pillow + manual snow course archives)</li>
+<li><a href="https://open.canada.ca/data/en/dataset/705df46f-e9d6-4124-bc4a-66f54c07b228" target="_blank">Open Canada: Manual Snow Survey Archive</a></li>
+<li><a href="https://github.com/andersonsam/avalanche_canada" target="_blank">Avalanche Canada Scraped Danger Ratings</a> (2012-2017)</li>
+<li><a href="https://cds.climate.copernicus.eu/datasets/reanalysis-era5-land" target="_blank">ERA5-Land Reanalysis</a> (pending integration)</li>
+</ul>
+</div>
+
 <div class="footer">
-Data: Environment Canada (Duncan Lake Dam, Rogers Pass), BC River Forecast Centre snow pillows. 36 seasons 1990-2025.<br>
-Model: Elevation-adjusted (6.5C/km lapse rate). "Great" requires both high composite score AND safety >= threshold (skiable steep terrain).
+Built with data from Environment Canada, BC River Forecast Centre, and Avalanche Canada.<br>
+Source code and raw data: ~/selkirk-snow/
 </div>
 
 </div>
