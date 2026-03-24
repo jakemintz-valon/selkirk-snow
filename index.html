@@ -196,6 +196,10 @@ tr.hl-b { background: #f0fffd; }
 <p style="font-size:13px;color:var(--muted);margin-bottom:8px;">Each dot is one season. Red line = freezing. Blue line = good preservation threshold (-5C).</p>
 <div class="chart-container"><canvas id="tempChart"></canvas></div>
 
+<h2>Year-by-Year Comparison</h2>
+<p style="font-size:13px;color:var(--muted);margin-bottom:8px;">Each pair of bars is one season. See exactly when the two tours were close vs. when one dominated.</p>
+<div class="chart-container"><canvas id="yearChart"></canvas></div>
+
 <h2>All Tours</h2>
 <div style="overflow-x:auto;">
 <table id="tourTable">
@@ -428,7 +432,7 @@ document.getElementById('resetWeights').addEventListener('click', () => {
   update();
 });
 
-let rankChart, compChart, distChart, boxChart, tempChart, successChart;
+let rankChart, compChart, distChart, boxChart, tempChart, successChart, yearChart;
 function initCharts() {
   rankChart = new Chart(document.getElementById('rankChart'), {
     type: 'bar', data: { labels: [], datasets: [] },
@@ -471,6 +475,21 @@ function initCharts() {
       scales: { y: { beginAtZero: true, max: 100,
                        title: { display: true, text: '% of seasons' },
                        ticks: { callback: v => v + '%' } } }
+    }
+  });
+  yearChart = new Chart(document.getElementById('yearChart'), {
+    type: 'bar',
+    data: { labels: [], datasets: [] },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: true },
+        title: { display: true, text: 'Score by Season (selected tours)' }
+      },
+      scales: {
+        y: { beginAtZero: true, max: 100, title: { display: true, text: 'Avg Composite Score' } },
+        x: { title: { display: true, text: 'Season' } }
+      }
     }
   });
 }
@@ -640,6 +659,36 @@ function update() {
        borderColor: 'rgba(52,152,219,0.3)', borderDash: [5,5], pointRadius: 0, borderWidth: 2 },
   );
   tempChart.update();
+
+  // Year-by-year comparison chart
+  if (a && b) {
+    // Get all seasons where both tours have data
+    const aByYear = {};
+    const bByYear = {};
+    a.entries.forEach(e => { aByYear[e.season_year] = e.avgScore; });
+    b.entries.forEach(e => { bByYear[e.season_year] = e.avgScore; });
+    const allYears = [...new Set([...Object.keys(aByYear), ...Object.keys(bByYear)])]
+      .map(Number).sort();
+
+    yearChart.data.labels = allYears.map(y => y + '/' + String(y+1).slice(2));
+    yearChart.data.datasets = [
+      {
+        label: tourA,
+        data: allYears.map(y => aByYear[y] !== undefined ? +aByYear[y].toFixed(1) : null),
+        backgroundColor: 'rgba(255,107,107,0.7)',
+        borderColor: 'rgba(255,107,107,1)',
+        borderWidth: 1,
+      },
+      {
+        label: tourB,
+        data: allYears.map(y => bByYear[y] !== undefined ? +bByYear[y].toFixed(1) : null),
+        backgroundColor: 'rgba(78,205,196,0.7)',
+        borderColor: 'rgba(78,205,196,1)',
+        borderWidth: 1,
+      },
+    ];
+    yearChart.update();
+  }
 
   // Table
   const sorted = [...ranking].sort((x,y) => y.median - x.median);
