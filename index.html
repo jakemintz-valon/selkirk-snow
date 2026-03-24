@@ -108,8 +108,8 @@ tr.hl-b { background: #f0fffd; }
       <div class="threshold-row"><span class="dot" style="background:var(--ok)"></span><label>OK >=</label><input type="number" id="th_ok" value="30" min="0" max="100"></div>
       <div class="threshold-row"><span class="dot" style="background:var(--poor)"></span><label>Poor</label><span style="font-size:12px;color:var(--muted);">below OK threshold</span></div>
       <h3 style="margin-top:14px;">Tour Success Definition</h3>
-      <div class="threshold-row"><label>Good tour</label><span style="font-size:12px;">>=</span> <input type="number" id="th_good_tour" value="4" min="1" max="10" style="width:40px;"> <span style="font-size:12px;color:var(--muted);">good+ days in a tour</span></div>
-      <div class="threshold-row"><label>Great tour</label><span style="font-size:12px;">>=</span> <input type="number" id="th_great_tour" value="3" min="1" max="10" style="width:40px;"> <span style="font-size:12px;color:var(--muted);">great days in a tour</span></div>
+      <div class="threshold-row"><label>Good tour</label><span style="font-size:12px;">>=</span> <input type="number" id="th_good_tour" value="75" min="0" max="100" style="width:50px;"> <span style="font-size:12px;color:var(--muted);">% of days are good+</span></div>
+      <div class="threshold-row"><label>Great tour</label><span style="font-size:12px;">>=</span> <input type="number" id="th_great_tour" value="50" min="0" max="100" style="width:50px;"> <span style="font-size:12px;color:var(--muted);">% of days are great</span></div>
 
       <div class="elev-toggle" style="margin-top:14px;">
         <button data-elev="peak">Peak 2,560m</button>
@@ -346,14 +346,16 @@ function computeAll(data, w, th) {
     const tourAvgs = d.entries.map(e => e.avgScore);
 
     // Tour-level success: how many seasons met the "good tour" / "great tour" bar?
-    const goodTourMin = +document.getElementById('th_good_tour').value;
-    const greatTourMin = +document.getElementById('th_great_tour').value;
+    // Thresholds are now percentages of tour days
+    const goodTourPctReq = +document.getElementById('th_good_tour').value / 100;
+    const greatTourPctReq = +document.getElementById('th_great_tour').value / 100;
     let goodTourCount = 0, greatTourCount = 0;
     for (const e of d.entries) {
+      const nTourDays = e.dayClasses.length || 1;
       const greatDays = e.dayClasses.filter(c => c === 'great').length;
       const goodPlusDays = e.dayClasses.filter(c => c === 'great' || c === 'good').length;
-      if (goodPlusDays >= goodTourMin) goodTourCount++;
-      if (greatDays >= greatTourMin) greatTourCount++;
+      if (goodPlusDays / nTourDays >= goodTourPctReq) goodTourCount++;
+      if (greatDays / nTourDays >= greatTourPctReq) greatTourCount++;
     }
 
     return {
@@ -393,8 +395,8 @@ document.getElementById('resetWeights').addEventListener('click', () => {
   document.getElementById('th_great_safety').value = 40;
   document.getElementById('th_good').value = 45;
   document.getElementById('th_ok').value = 30;
-  document.getElementById('th_good_tour').value = 4;
-  document.getElementById('th_great_tour').value = 3;
+  document.getElementById('th_good_tour').value = 75;
+  document.getElementById('th_great_tour').value = 50;
   update();
 });
 
