@@ -103,8 +103,8 @@ tr.hl-b { background: #f0fffd; }
     </div>
     <div>
       <h3>Day Quality Thresholds</h3>
-      <div class="threshold-row"><span class="dot" style="background:var(--great)"></span><label>Great >=</label><input type="number" id="th_great" value="60" min="0" max="100"> <span style="font-size:12px;color:var(--muted);">+ safety >= <input type="number" id="th_great_safety" value="40" min="0" max="100" style="width:50px;padding:2px 4px;border:1px solid #ccc;border-radius:3px;text-align:center;font-size:12px;"> (guides won't cancel)</span></div>
-      <div class="threshold-row"><span class="dot" style="background:var(--good)"></span><label>Good >=</label><input type="number" id="th_good" value="45" min="0" max="100"></div>
+      <div class="threshold-row"><span class="dot" style="background:var(--great)"></span><label>Great >=</label><input type="number" id="th_great" value="60" min="0" max="100"> <span style="font-size:12px;color:var(--muted);">+ safety >= <input type="number" id="th_great_safety" value="40" min="0" max="100" style="width:50px;padding:2px 4px;border:1px solid #ccc;border-radius:3px;text-align:center;font-size:12px;"> (can ski steep)</span></div>
+      <div class="threshold-row"><span class="dot" style="background:var(--good)"></span><label>Good >=</label><input type="number" id="th_good" value="45" min="0" max="100"> <span style="font-size:12px;color:var(--muted);">+ safety >= <input type="number" id="th_good_safety" value="25" min="0" max="100" style="width:50px;padding:2px 4px;border:1px solid #ccc;border-radius:3px;text-align:center;font-size:12px;"> (guides not canceling)</span></div>
       <div class="threshold-row"><span class="dot" style="background:var(--ok)"></span><label>OK >=</label><input type="number" id="th_ok" value="30" min="0" max="100"></div>
       <div class="threshold-row"><span class="dot" style="background:var(--poor)"></span><label>Poor</label><span style="font-size:12px;color:var(--muted);">below OK threshold</span></div>
       <h3 style="margin-top:14px;">Tour Success Definition</h3>
@@ -221,8 +221,8 @@ tr.hl-b { background: #f0fffd; }
 
 <h3 style="font-size:15px; color:var(--teal); margin: 16px 0 8px;">Day Quality Classification</h3>
 <table style="font-size:13px;">
-<tr><td style="background:#2ecc71;color:white;font-weight:700;width:60px;text-align:center;">Great</td><td>Composite score >= threshold <strong>AND</strong> safety score >= safety threshold. Deep powder on steep, stable terrain. The days you tell stories about.</td></tr>
-<tr><td style="background:#4ecdc4;color:white;font-weight:700;text-align:center;">Good</td><td>Composite score >= good threshold. Solid skiing with fresh or well-preserved snow. You're happy.</td></tr>
+<tr><td style="background:#2ecc71;color:white;font-weight:700;width:60px;text-align:center;">Great</td><td>Composite score >= threshold <strong>AND</strong> safety >= great safety threshold. Deep powder on steep, stable terrain. The days you tell stories about.</td></tr>
+<tr><td style="background:#4ecdc4;color:white;font-weight:700;text-align:center;">Good</td><td>Composite score >= good threshold <strong>AND</strong> safety >= good safety threshold. If the snowpack is unstable enough that guides are severely limiting terrain, the day can't be "good" no matter how much powder there is. Great snow you can't safely ski doesn't count.</td></tr>
 <tr><td style="background:#f7dc6f;color:white;font-weight:700;text-align:center;">OK</td><td>Composite score >= OK threshold. Skiable but not special. Older snow, some sun effect, heavier conditions.</td></tr>
 <tr><td style="background:#e74c3c;color:white;font-weight:700;text-align:center;">Poor</td><td>Below OK threshold. Crust, wet snow, thin coverage, or high hazard limiting terrain access.</td></tr>
 </table>
@@ -296,6 +296,7 @@ function getThresholds() {
     great: +document.getElementById('th_great').value,
     great_safety: +document.getElementById('th_great_safety').value,
     good: +document.getElementById('th_good').value,
+    good_safety: +document.getElementById('th_good_safety').value,
     ok: +document.getElementById('th_ok').value,
   };
 }
@@ -307,8 +308,9 @@ function dayComposite(d, w) {
 
 function classifyDay(d, w, th) {
   const score = dayComposite(d, w);
+  // Safety gates: great powder on dangerous terrain isn't a great (or good) day
   if (score >= th.great && d.safety >= th.great_safety) return 'great';
-  if (score >= th.good) return 'good';
+  if (score >= th.good && d.safety >= th.good_safety) return 'good';
   if (score >= th.ok) return 'ok';
   return 'poor';
 }
@@ -394,6 +396,7 @@ document.getElementById('resetWeights').addEventListener('click', () => {
   document.getElementById('th_great').value = 60;
   document.getElementById('th_great_safety').value = 40;
   document.getElementById('th_good').value = 45;
+  document.getElementById('th_good_safety').value = 25;
   document.getElementById('th_ok').value = 30;
   document.getElementById('th_good_tour').value = 75;
   document.getElementById('th_great_tour').value = 50;
@@ -634,7 +637,7 @@ function update() {
 }
 
 for (const s of Object.values(sliders)) s.addEventListener('input', update);
-['th_great','th_good','th_ok','th_great_safety','th_good_tour','th_great_tour'].forEach(id =>
+['th_great','th_good','th_ok','th_great_safety','th_good_safety','th_good_tour','th_great_tour'].forEach(id =>
   document.getElementById(id).addEventListener('input', update));
 document.querySelectorAll('.elev-toggle button').forEach(btn => {
   btn.addEventListener('click', () => {
