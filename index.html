@@ -107,6 +107,10 @@ tr.hl-b { background: #f0fffd; }
       <div class="threshold-row"><span class="dot" style="background:var(--good)"></span><label>Good >=</label><input type="number" id="th_good" value="50" min="0" max="100"></div>
       <div class="threshold-row"><span class="dot" style="background:var(--ok)"></span><label>OK >=</label><input type="number" id="th_ok" value="35" min="0" max="100"></div>
       <div class="threshold-row"><span class="dot" style="background:var(--poor)"></span><label>Poor</label><span style="font-size:12px;color:var(--muted);">below OK threshold</span></div>
+      <h3 style="margin-top:14px;">Tour Success Definition</h3>
+      <div class="threshold-row"><label>Good tour</label><span style="font-size:12px;">>=</span> <input type="number" id="th_good_tour" value="4" min="1" max="10" style="width:40px;"> <span style="font-size:12px;color:var(--muted);">good+ days in a tour</span></div>
+      <div class="threshold-row"><label>Great tour</label><span style="font-size:12px;">>=</span> <input type="number" id="th_great_tour" value="3" min="1" max="10" style="width:40px;"> <span style="font-size:12px;color:var(--muted);">great days in a tour</span></div>
+
       <div class="elev-toggle" style="margin-top:14px;">
         <button data-elev="peak">Peak 2,560m</button>
         <button class="active" data-elev="aframe">A-Frame 1,900m</button>
@@ -140,6 +144,10 @@ tr.hl-b { background: #f0fffd; }
   </div>
 </div>
 
+<h2>Tour Success Rate</h2>
+<p style="font-size:13px;color:var(--muted);margin-bottom:8px;">What % of seasons was each tour a "good trip" or "great trip"? Adjust the definitions above.</p>
+<div class="chart-container"><canvas id="successChart"></canvas></div>
+
 <h2>Expected Good & Great Days Per Tour</h2>
 <div class="legend-row">
   <div class="legend-item"><span class="dot" style="background:var(--great)"></span> Great</div>
@@ -167,9 +175,9 @@ tr.hl-b { background: #f0fffd; }
 <div style="overflow-x:auto;">
 <table id="tourTable">
 <thead>
-<tr><th data-sort="rank">#</th><th data-sort="tour">Tour</th><th data-sort="dates">Dates</th>
-<th data-sort="median">Median</th><th data-sort="great">Great/tour</th><th data-sort="good">Good+/tour</th>
-<th data-sort="snow">Snow</th><th data-sort="temp">Temp</th><th data-sort="n">Seasons</th></tr>
+<tr><th>#</th><th>Tour</th><th>Dates</th>
+<th>Median</th><th>Good trip %</th><th>Great trip %</th><th>Great/tour</th><th>Good+/tour</th>
+<th>Snow</th><th>Temp</th><th>Seasons</th></tr>
 </thead>
 <tbody id="tourBody"></tbody>
 </table>
@@ -336,6 +344,18 @@ function computeAll(data, w, th) {
     const ok = d.allDayClasses.filter(c => c === 'ok').length;
     const poor = d.allDayClasses.filter(c => c === 'poor').length;
     const tourAvgs = d.entries.map(e => e.avgScore);
+
+    // Tour-level success: how many seasons met the "good tour" / "great tour" bar?
+    const goodTourMin = +document.getElementById('th_good_tour').value;
+    const greatTourMin = +document.getElementById('th_great_tour').value;
+    let goodTourCount = 0, greatTourCount = 0;
+    for (const e of d.entries) {
+      const greatDays = e.dayClasses.filter(c => c === 'great').length;
+      const goodPlusDays = e.dayClasses.filter(c => c === 'great' || c === 'good').length;
+      if (goodPlusDays >= goodTourMin) goodTourCount++;
+      if (greatDays >= greatTourMin) greatTourCount++;
+    }
+
     return {
       tour: t.id, dates: t.dates, days: t.days,
       median: median(tourAvgs),
@@ -346,6 +366,9 @@ function computeAll(data, w, th) {
       goodPct: nDays > 0 ? 100 * good / nDays : 0,
       okPct: nDays > 0 ? 100 * ok / nDays : 0,
       poorPct: nDays > 0 ? 100 * poor / nDays : 0,
+      goodTourPct: nSeasons > 0 ? 100 * goodTourCount / nSeasons : 0,
+      greatTourPct: nSeasons > 0 ? 100 * greatTourCount / nSeasons : 0,
+      goodTourCount, greatTourCount,
       avgSnow: d.entries.length ? d.entries.reduce((a,e)=>a+e.total_snow_cm,0)/d.entries.length : 0,
       avgTemp: d.entries.length ? d.entries.reduce((a,e)=>a+e.avg_temp,0)/d.entries.length : 0,
       entries: d.entries,
@@ -370,10 +393,12 @@ document.getElementById('resetWeights').addEventListener('click', () => {
   document.getElementById('th_great_safety').value = 60;
   document.getElementById('th_good').value = 50;
   document.getElementById('th_ok').value = 35;
+  document.getElementById('th_good_tour').value = 4;
+  document.getElementById('th_great_tour').value = 3;
   update();
 });
 
-let rankChart, compChart, distChart, boxChart, tempChart;
+let rankChart, compChart, distChart, boxChart, tempChart, successChart;
 function initCharts() {
   rankChart = new Chart(document.getElementById('rankChart'), {
     type: 'bar', data: { labels: [], datasets: [] },
@@ -407,6 +432,17 @@ function initCharts() {
                scales: { x: { title: { display: true, text: 'Season' } },
                           y: { title: { display: true, text: 'Avg Temp (C) at elevation' } } } }
   });
+  successChart = new Chart(document.getElementById('successChart'), {
+    type: 'bar',
+    data: { labels: [], datasets: [] },
+    options: { responsive: true,
+      plugins: { legend: { display: true },
+                 title: { display: true, text: 'What % of seasons was this tour worth the trip?' } },
+      scales: { y: { beginAtZero: true, max: 100,
+                       title: { display: true, text: '% of seasons' },
+                       ticks: { callback: v => v + '%' } } }
+    }
+  });
 }
 
 function update() {
@@ -426,19 +462,17 @@ function update() {
   document.getElementById('score_a').textContent = a ? a.median.toFixed(1) : '--';
   document.getElementById('score_b').textContent = b ? b.median.toFixed(1) : '--';
 
-  // Day quality bars in cards
-  if (a) {
-    document.getElementById('days_a').innerHTML =
-      `<strong>${a.greatPerTour.toFixed(1)}</strong> great + <strong>${(a.goodPlusPerTour - a.greatPerTour).toFixed(1)}</strong> good days per tour (of ${a.days})` +
-      dayBar(a) +
-      `<div style="font-size:12px;color:var(--muted);margin-top:4px;">Avg snow: ${a.avgSnow.toFixed(0)}cm | Temp: ${a.avgTemp.toFixed(1)}C | ${a.n} seasons</div>`;
+  // Day quality bars + tour success rates in cards
+  function cardHtml(r) {
+    if (!r) return '';
+    return `<strong>${r.greatPerTour.toFixed(1)}</strong> great + <strong>${(r.goodPlusPerTour - r.greatPerTour).toFixed(1)}</strong> good days per tour (of ${r.days})` +
+      dayBar(r) +
+      `<div style="margin-top:8px;font-size:14px;"><strong>${r.goodTourPct.toFixed(0)}%</strong> of seasons were a <span style="color:var(--good);font-weight:700;">good trip</span> | ` +
+      `<strong>${r.greatTourPct.toFixed(0)}%</strong> were a <span style="color:var(--great);font-weight:700;">great trip</span></div>` +
+      `<div style="font-size:12px;color:var(--muted);margin-top:4px;">Avg snow: ${r.avgSnow.toFixed(0)}cm | Temp: ${r.avgTemp.toFixed(1)}C | ${r.n} seasons</div>`;
   }
-  if (b) {
-    document.getElementById('days_b').innerHTML =
-      `<strong>${b.greatPerTour.toFixed(1)}</strong> great + <strong>${(b.goodPlusPerTour - b.greatPerTour).toFixed(1)}</strong> good days per tour (of ${b.days})` +
-      dayBar(b) +
-      `<div style="font-size:12px;color:var(--muted);margin-top:4px;">Avg snow: ${b.avgSnow.toFixed(0)}cm | Temp: ${b.avgTemp.toFixed(1)}C | ${b.n} seasons</div>`;
-  }
+  document.getElementById('days_a').innerHTML = cardHtml(a);
+  document.getElementById('days_b').innerHTML = cardHtml(b);
 
   // Verdict
   if (a && b) {
@@ -448,10 +482,25 @@ function update() {
     }).length;
     const both = a.entries.filter(ae => b.entries.find(be => be.season_year === ae.season_year)).length;
     document.getElementById('verdict').innerHTML =
-      `${tourA} averages <strong>${a.greatPerTour.toFixed(1)} great</strong> + <strong>${(a.goodPlusPerTour - a.greatPerTour).toFixed(1)} good</strong> days. ` +
-      `${tourB} averages <strong>${b.greatPerTour.toFixed(1)} great</strong> + <strong>${(b.goodPlusPerTour - b.greatPerTour).toFixed(1)} good</strong> days. ` +
+      `${tourA}: <strong>${a.goodTourPct.toFixed(0)}%</strong> good trips, <strong>${a.greatTourPct.toFixed(0)}%</strong> great trips. ` +
+      `${tourB}: <strong>${b.goodTourPct.toFixed(0)}%</strong> good trips, <strong>${b.greatTourPct.toFixed(0)}%</strong> great trips. ` +
       (both > 0 ? `${tourA} wins <strong>${aWins}/${both}</strong> seasons.` : '');
   }
+
+  // Success rate chart
+  const successColors = ranking.map(r => r.tour === tourA ? 'rgba(255,107,107,' :
+    r.tour === tourB ? 'rgba(78,205,196,' : 'rgba(184,212,227,');
+  successChart.data.labels = ranking.map(r => r.tour.replace('#',''));
+  successChart.data.datasets = [
+    { label: 'Great trip %', data: ranking.map(r => +r.greatTourPct.toFixed(1)),
+       backgroundColor: successColors.map(c => c + '0.9)'), borderWidth: 0 },
+    { label: 'Good trip % (not great)', data: ranking.map(r => +(r.goodTourPct - r.greatTourPct).toFixed(1)),
+       backgroundColor: successColors.map(c => c + '0.45)'), borderWidth: 0 },
+  ];
+  successChart.options.scales.x = { stacked: true };
+  successChart.options.scales.y = { stacked: true, max: 100, beginAtZero: true,
+    title: { display: true, text: '% of seasons' }, ticks: { callback: v => v + '%' } };
+  successChart.update();
 
   // Distribution chart
   distChart.data.labels = ranking.map(r => r.tour.replace('#',''));
@@ -571,6 +620,8 @@ function update() {
       <td><span class="rank-badge">${i+1}</span></td>
       <td><strong>${r.tour}</strong></td><td>${r.dates}</td>
       <td><strong>${r.median.toFixed(1)}</strong></td>
+      <td><strong>${r.goodTourPct.toFixed(0)}%</strong></td>
+      <td>${r.greatTourPct.toFixed(0)}%</td>
       <td>${r.greatPerTour.toFixed(1)}</td>
       <td>${r.goodPlusPerTour.toFixed(1)}</td>
       <td>${r.avgSnow.toFixed(0)}</td>
@@ -581,7 +632,7 @@ function update() {
 }
 
 for (const s of Object.values(sliders)) s.addEventListener('input', update);
-['th_great','th_good','th_ok','th_great_safety'].forEach(id =>
+['th_great','th_good','th_ok','th_great_safety','th_good_tour','th_great_tour'].forEach(id =>
   document.getElementById(id).addEventListener('input', update));
 document.querySelectorAll('.elev-toggle button').forEach(btn => {
   btn.addEventListener('click', () => {
