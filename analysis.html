@@ -133,9 +133,58 @@ a { color: var(--teal); }
 
 <h2>What Climate Might Be Doing</h2>
 
-<p>The last-10-year deterioration in March conditions is consistent with warming trends in BC's interior mountains. March 2016-2025 averaged -3.0C at A-Frame vs the all-time -4.3C. That 1.3C shift pushes more days across the critical 0C threshold where rain replaces snow and existing snowpack degrades rapidly. February, starting from -8.8C, has a much larger buffer before warming threatens conditions.</p>
+<h3>What Our Data Shows (and Doesn't)</h3>
 
-<p>Whether this continues is unknowable from weather station data alone. But if the recent pattern persists, March carries more risk than the 36-season average suggests.</p>
+<p>The 36-season station record is suggestive but statistically inconclusive. Running regressions on March temperature, snowfall, and quality scores produces nothing significant:</p>
+
+<table>
+<tr><th>Variable</th><th>Trend per decade</th><th>R-squared</th><th>p-value</th></tr>
+<tr><td>March mean temp (A-Frame)</td><td>+0.015C</td><td>0.0001</td><td>0.95</td></tr>
+<tr><td>February mean temp</td><td>-0.206C</td><td>--</td><td>0.60</td></tr>
+<tr><td>March snowfall</td><td>+2.9 cm</td><td>--</td><td>0.68</td></tr>
+</table>
+
+<p>None of these trends are distinguishable from noise. The decade-by-decade breakdown shows why: the signal isn't monotonic.</p>
+
+<table>
+<tr><th>Decade</th><th>March mean temp (C)</th><th>March snowfall (cm)</th><th>Days above 0C</th><th>Failure rate*</th></tr>
+<tr><td>1990s</td><td>-5.07</td><td>109</td><td>6.8%</td><td>55%</td></tr>
+<tr class="highlight-b"><td>2000s</td><td>-5.47</td><td>147</td><td>2.3%</td><td>30%</td></tr>
+<tr class="highlight-b"><td>2010s</td><td>-4.63</td><td>147</td><td>7.2%</td><td>22%</td></tr>
+<tr class="highlight"><td>2020s</td><td>-5.26</td><td>113</td><td>8.3%</td><td>67%</td></tr>
+</table>
+
+<p style="font-size: 13px; color: var(--muted);">*Failure rate = seasons where Tour #2516 composite score &lt; 58.</p>
+
+<p>The 2000s and 2010s were a cold, snowy anomaly: fewer days above 0C, 35% more snowfall, and failure rates as low as 22%. The 2020s look bad, but the 1990s also had high failure rates (55%). The 5-year rolling average is at its all-time low (50.4), but the 1990s hit 47.2. On station data alone, you could argue this is just natural variability returning to baseline after an unusually good two decades.</p>
+
+<p>One signal is harder to dismiss: the warm tail is growing. Days above 3C at A-Frame in March went from 0% during 1990-2005 to 1.5% during 2010-2025. March melt events are accelerating at 1.3% per decade, the fastest rate of any month. These are the days that destroy snowpacks.</p>
+
+<h3>What Published Research Shows</h3>
+
+<p>The station record is too short and noisy to detect climate trends. But decades of published research on BC's interior mountains fills the gap:</p>
+
+<div class="insight">
+<strong>The established science:</strong> BC's interior mountains have warmed ~1.5-1.9C since 1948, roughly 0.25C per decade. Spring warming is ~1.8C over 1948-2007, less than winter's 3.0C but still substantial. Snowpack (SWE) is declining 5-7% per decade in the Southern Interior mountains, significant at 95% confidence. <a href="https://doi.org/10.1002/2016GL071145">Najafi et al. (2017)</a> formally attributed BC's spring SWE decline to anthropogenic forcing.
+</div>
+
+<p><a href="https://doi.org/10.5194/tc-9-217-2015">Needham et al. (2015)</a> studied Rogers Pass and Mt. Fidelity specifically, finding decreasing 24-hour new snow amounts and increasing early-season rain crusts. A 1.8C spring warming translates to roughly 270m of rain/snow line rise, which is the difference between snow at A-Frame and rain at A-Frame during a marginal storm.</p>
+
+<p>The station record can't detect a 0.25C/decade signal because 36 years of mountain weather data is dominated by year-to-year and decadal variability. You'd need 60+ years of clean data to pull that signal out of the noise. But the signal is real: it's been measured across hundreds of stations and confirmed via formal attribution studies.</p>
+
+<h3>Putting It Together</h3>
+
+<p>The last 10 years aren't a clean monotonic decline. The 1990s also had high failure rates. What's most likely happening is three things compounding:</p>
+
+<ol style="margin: 10px 0 10px 20px; font-size: 15px;">
+<li><strong>Real background warming</strong> of ~0.25C/decade has cumulatively raised spring temperatures by ~1C since 1990, pushing March closer to the 0C threshold at A-Frame.</li>
+<li><strong>Natural decadal variability</strong> masked the trend for two decades. The 2000s-2010s were a cold/snowy anomaly that made March look better than its long-term trajectory.</li>
+<li><strong>The current 2020s regime</strong> combines the accumulated warming with a return to more typical variability, resulting in March temperatures that more frequently cross 0C at A-Frame.</li>
+</ol>
+
+<div class="warning">
+<strong>It's not purely climate change OR statistical noise. It's both.</strong> The warming trend is real (published, attributed, significant across large datasets), but the specific decade-to-decade pattern at this station is dominated by natural variability. The practical implication: the 2000s-2010s were likely the anomaly, not the 2020s. March conditions are unlikely to return to that golden era.
+</div>
 
 <h2>What to Expect</h2>
 
