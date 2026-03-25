@@ -135,17 +135,17 @@ tr.hl-b { background: #f0fffd; }
         <tr><td>0 cm</td><td>-10C</td><td style="color:var(--great);font-weight:700;">100</td><td>Low danger. All terrain open, ski anywhere.</td></tr>
         <tr><td>25 cm (10")</td><td>-5C</td><td style="color:var(--great);font-weight:700;">70</td><td>Moderate. Normal cat skiing operations, full terrain.</td></tr>
         <tr><td>40 cm (16")</td><td>-5C</td><td style="font-weight:700;">52</td><td>Considerable. Guides avoiding obvious avalanche paths.</td></tr>
-        <tr style="background:#f0fff0;"><td>50 cm (20")</td><td>-3C</td><td style="color:var(--teal);font-weight:700;">40</td><td>Great-day gate (default). High danger. Steep terrain limited, but tree skiing in sheltered zones is excellent.</td></tr>
-        <tr><td>50 cm (20")</td><td>+2C</td><td style="font-weight:700;">30</td><td>High + wet slab risk. Significant terrain restrictions.</td></tr>
-        <tr style="background:#fff0f0;"><td>65 cm (26")</td><td>0C</td><td style="color:var(--coral);font-weight:700;">22</td><td>Good-day gate (default 25). Guides barely operating, mostly mellow terrain.</td></tr>
+        <tr style="background:#f0fff0;"><td>50 cm (20")</td><td>-3C</td><td style="color:var(--teal);font-weight:700;">40</td><td>High danger. Steep terrain limited (0.55x multiplier), but tree skiing in sheltered zones can be excellent.</td></tr>
+        <tr><td>50 cm (20")</td><td>+2C</td><td style="font-weight:700;">30</td><td>High + wet slab risk. Terrain multiplier ~0.45x. Significant restrictions.</td></tr>
+        <tr style="background:#fff0f0;"><td>65 cm (26")</td><td>0C</td><td style="color:var(--coral);font-weight:700;">22</td><td>Extreme. Terrain multiplier ~0.25x. Guides barely operating.</td></tr>
         <tr><td>83 cm+ (33")</td><td>any</td><td style="color:var(--coral);font-weight:700;">~0</td><td>Extreme. Operations likely canceled. Nobody's skiing.</td></tr>
         </table>
         <p style="margin:8px 0 0;font-size:12px;color:var(--muted);">Note: This is a simplified proxy. Real avalanche forecasting requires snowpack stratigraphy, weak layer history, and field observations. At a guided operation like Selkirk, the guides make terrain decisions based on far more information than loading alone.</p>
       </div>
       <div class="threshold-row"><span class="dot" style="background:var(--poor)"></span><label>Bad</label><span style="font-size:12px;color:var(--muted);">below Good enough threshold</span></div>
       <h3 style="margin-top:14px;">Tour Success Definition</h3>
-      <div class="threshold-row"><label>Good tour</label><span style="font-size:12px;">>=</span> <input type="number" id="th_good_tour" value="75" min="0" max="100" style="width:50px;"> <span style="font-size:12px;color:var(--muted);">% of days are good+</span></div>
-      <div class="threshold-row"><label>Great tour</label><span style="font-size:12px;">>=</span> <input type="number" id="th_great_tour" value="50" min="0" max="100" style="width:50px;"> <span style="font-size:12px;color:var(--muted);">% of days are great</span></div>
+      <div class="threshold-row"><label>Good trip</label><span style="font-size:12px;">>=</span> <input type="number" id="th_good_tour" value="60" min="0" max="100" style="width:50px;"> <span style="font-size:12px;color:var(--muted);">% of days are Good+ (70+)</span></div>
+      <div class="threshold-row"><label>Epic trip</label><span style="font-size:12px;">>=</span> <input type="number" id="th_great_tour" value="40" min="0" max="100" style="width:50px;"> <span style="font-size:12px;color:var(--muted);">% of days are Epic (90+)</span></div>
 
       <div class="elev-toggle" style="margin-top:14px;">
         <button data-elev="peak">Peak 2,560m</button>
@@ -182,10 +182,10 @@ tr.hl-b { background: #f0fffd; }
 </div>
 
 <h2>Tour Success Rate</h2>
-<p style="font-size:13px;color:var(--muted);margin-bottom:8px;">What % of seasons was each tour a "good trip" or "great trip"? Adjust the definitions above.</p>
+<p style="font-size:13px;color:var(--muted);margin-bottom:8px;">What % of seasons was each tour a "good trip" (>=60% of days Good+) or "epic trip" (>=40% of days Epic)?</p>
 <div class="chart-container"><canvas id="successChart"></canvas></div>
 
-<h2>Expected Good & Great Days Per Tour</h2>
+<h2>Expected Day Quality Per Tour</h2>
 <div class="legend-row">
   <div class="legend-item"><span class="dot" style="background:var(--great)"></span> Epic (90+)</div>
   <div class="legend-item"><span class="dot" style="background:var(--good)"></span> Great/Good (70+)</div>
@@ -223,7 +223,7 @@ What % of seasons meet your floor for a good trip? "Best terrain" simulates guid
 <table id="tourTable">
 <thead>
 <tr><th>#</th><th>Tour</th><th>Dates</th>
-<th>Median</th><th>Good trip %</th><th>Great trip %</th><th>Great/tour</th><th>Good+/tour</th>
+<th>Median</th><th>Good trip %</th><th>Epic trip %</th><th>Epic/tour</th><th>Good+/tour</th>
 <th>Snow</th><th>Temp</th><th>Seasons</th></tr>
 </thead>
 <tbody id="tourBody"></tbody>
@@ -267,10 +267,10 @@ What % of seasons meet your floor for a good trip? "Best terrain" simulates guid
 
 <h3 style="font-size:15px; color:var(--teal); margin: 16px 0 8px;">Day Quality Classification</h3>
 <table style="font-size:13px;">
-<tr><td style="background:#2ecc71;color:white;font-weight:700;width:60px;text-align:center;">Epic</td><td>Composite score >= 90 <strong>AND</strong> safety >= great safety threshold. Deep powder on steep, stable terrain. The days you tell stories about.</td></tr>
-<tr><td style="background:#4ecdc4;color:white;font-weight:700;text-align:center;">Great/Good</td><td>Composite score >= 70 <strong>AND</strong> safety >= good safety threshold. Solid skiing. Great snow you can't safely ski doesn't count.</td></tr>
-<tr><td style="background:#f7dc6f;color:white;font-weight:700;text-align:center;">Good enough</td><td>Composite score >= 60. Still worth the trip, but you notice compromises. Older snow, some sun effect, heavier conditions.</td></tr>
-<tr><td style="background:#e74c3c;color:white;font-weight:700;text-align:center;">Bad</td><td>Below 60. Crust, wet snow, thin coverage, or high hazard limiting terrain access. You question why you came.</td></tr>
+<tr><td style="background:#2ecc71;color:white;font-weight:700;width:60px;text-align:center;">Epic</td><td>Score >= 90. Multiple powder days, cold temps preserve everything, full terrain. Safety is already baked into the score as a terrain multiplier.</td></tr>
+<tr><td style="background:#4ecdc4;color:white;font-weight:700;text-align:center;">Great/Good</td><td>Score >= 70. Solid skiing: 1-3 powder days plus well-preserved older snow. Guides find good terrain, surfaces stay soft.</td></tr>
+<tr><td style="background:#f7dc6f;color:white;font-weight:700;text-align:center;">Good enough</td><td>Score >= 60. Still worth the trip. Limited fresh, some warm days, crust forming. You notice compromises but it's still cat skiing.</td></tr>
+<tr><td style="background:#e74c3c;color:white;font-weight:700;text-align:center;">Bad</td><td>Score below 60. Rain at elevation, snowpack destroyed, or extreme danger restricting all terrain. You question why you came.</td></tr>
 </table>
 
 <h3 style="font-size:15px; color:var(--teal); margin: 16px 0 8px;">Limitations</h3>
@@ -441,8 +441,8 @@ document.getElementById('resetWeights').addEventListener('click', () => {
   document.getElementById('th_great').value = 90;
   document.getElementById('th_good').value = 70;
   document.getElementById('th_ok').value = 60;
-  document.getElementById('th_good_tour').value = 75;
-  document.getElementById('th_great_tour').value = 50;
+  document.getElementById('th_good_tour').value = 60;
+  document.getElementById('th_great_tour').value = 40;
   update();
 });
 
@@ -546,7 +546,7 @@ function update() {
     return `<strong>${r.greatPerTour.toFixed(1)}</strong> great + <strong>${(r.goodPlusPerTour - r.greatPerTour).toFixed(1)}</strong> good days per tour (of ${r.days})` +
       dayBar(r) +
       `<div style="margin-top:8px;font-size:14px;"><strong>${r.goodTourPct.toFixed(0)}%</strong> of seasons were a <span style="color:var(--good);font-weight:700;">good trip</span> | ` +
-      `<strong>${r.greatTourPct.toFixed(0)}%</strong> were a <span style="color:var(--great);font-weight:700;">great trip</span></div>` +
+      `<strong>${r.greatTourPct.toFixed(0)}%</strong> were <span style="color:var(--great);font-weight:700;">epic</span></div>` +
       `<div style="font-size:12px;color:var(--muted);margin-top:4px;">Avg snow: ${r.avgSnow.toFixed(0)}cm | Temp: ${r.avgTemp.toFixed(1)}C | ${r.n} seasons</div>`;
   }
   document.getElementById('days_a').innerHTML = cardHtml(a);
@@ -560,8 +560,8 @@ function update() {
     }).length;
     const both = a.entries.filter(ae => b.entries.find(be => be.season_year === ae.season_year)).length;
     document.getElementById('verdict').innerHTML =
-      `${tourA}: <strong>${a.goodTourPct.toFixed(0)}%</strong> good trips, <strong>${a.greatTourPct.toFixed(0)}%</strong> great trips. ` +
-      `${tourB}: <strong>${b.goodTourPct.toFixed(0)}%</strong> good trips, <strong>${b.greatTourPct.toFixed(0)}%</strong> great trips. ` +
+      `${tourA}: <strong>${a.goodTourPct.toFixed(0)}%</strong> good trips, <strong>${a.greatTourPct.toFixed(0)}%</strong> epic. ` +
+      `${tourB}: <strong>${b.goodTourPct.toFixed(0)}%</strong> good trips, <strong>${b.greatTourPct.toFixed(0)}%</strong> epic. ` +
       (both > 0 ? `${tourA} wins <strong>${aWins}/${both}</strong> seasons.` : '');
   }
 
@@ -570,9 +570,9 @@ function update() {
     r.tour === tourB ? 'rgba(78,205,196,' : 'rgba(184,212,227,');
   successChart.data.labels = ranking.map(r => r.tour.replace('#',''));
   successChart.data.datasets = [
-    { label: 'Great trip %', data: ranking.map(r => +r.greatTourPct.toFixed(1)),
+    { label: 'Epic trip %', data: ranking.map(r => +r.greatTourPct.toFixed(1)),
        backgroundColor: successColors.map(c => c + '0.9)'), borderWidth: 0 },
-    { label: 'Good trip % (not great)', data: ranking.map(r => +(r.goodTourPct - r.greatTourPct).toFixed(1)),
+    { label: 'Good trip % (not epic)', data: ranking.map(r => +(r.goodTourPct - r.greatTourPct).toFixed(1)),
        backgroundColor: successColors.map(c => c + '0.45)'), borderWidth: 0 },
   ];
   successChart.options.scales.x = { stacked: true };
