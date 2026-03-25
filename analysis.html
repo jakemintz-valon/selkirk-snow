@@ -153,6 +153,67 @@ a { color: var(--teal); }
 
 <p>With the multiplicative model, the worst Februaries are actually <em>too much snow</em> seasons: heavy loading with HIGH danger, so the terrain multiplier crushes the score. Guides can't access the steep goods. March failures are different: warm events that destroy the snowpack entirely, leaving no terrain escape.</p>
 
+<h2>Where Each Tour Ranks Each Year</h2>
+<p style="font-size:13px;color:var(--muted);margin-bottom:8px;">Gray band = range of all 21 tours that season. Red dot = Feb #2512. Teal dot = Mar #2516. Feb is reliably in the top half. Mar bounces between great and worst-of-season.</p>
+<div style="max-width:750px;margin:16px 0;">
+<canvas id="rankingChart" height="300"></canvas>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script>
+const RD = [{"season":"2005/06","season_year":2005,"median":78.8,"p25":73.4,"p75":84.5,"min":46.4,"max":90.7,"feb_score":84.5,"feb_rank":5,"mar_score":84.5,"mar_rank":6},{"season":"2006/07","season_year":2006,"median":79.8,"p25":61.3,"p75":84.3,"min":40.6,"max":92.7,"feb_score":84.3,"feb_rank":6,"mar_score":60.4,"mar_rank":17},{"season":"2007/08","season_year":2007,"median":87.6,"p25":79.4,"p75":89.6,"min":49.4,"max":92.9,"feb_score":49.4,"feb_rank":21,"mar_score":87.6,"mar_rank":11},{"season":"2008/09","season_year":2008,"median":80.7,"p25":77.5,"p75":87.2,"min":32.1,"max":93.1,"feb_score":68.8,"feb_rank":19,"mar_score":78.6,"mar_rank":15},{"season":"2009/10","season_year":2009,"median":79.9,"p25":72.9,"p75":84.5,"min":46.6,"max":91.1,"feb_score":74.7,"feb_rank":15,"mar_score":72.1,"mar_rank":17},{"season":"2010/11","season_year":2010,"median":83.4,"p25":77.7,"p75":86.4,"min":34.5,"max":95.1,"feb_score":95.1,"feb_rank":1,"mar_score":84.8,"mar_rank":9},{"season":"2011/12","season_year":2011,"median":74.9,"p25":66.2,"p75":84.2,"min":50.5,"max":91.7,"feb_score":55.3,"feb_rank":20,"mar_score":66.2,"mar_rank":16},{"season":"2012/13","season_year":2012,"median":76.8,"p25":64.4,"p75":82.1,"min":3.0,"max":92.6,"feb_score":59.9,"feb_rank":18,"mar_score":62.3,"mar_rank":17},{"season":"2013/14","season_year":2013,"median":73.5,"p25":67.3,"p75":75.6,"min":54.6,"max":82.1,"feb_score":78.3,"feb_rank":5,"mar_score":74.9,"mar_rank":8},{"season":"2014/15","season_year":2014,"median":68.7,"p25":60.0,"p75":77.7,"min":46.6,"max":87.9,"feb_score":86.7,"feb_rank":3,"mar_score":46.6,"mar_rank":21},{"season":"2015/16","season_year":2015,"median":78.6,"p25":70.0,"p75":86.5,"min":3.0,"max":90.5,"feb_score":74.2,"feb_rank":13,"mar_score":61.6,"mar_rank":18},{"season":"2016/17","season_year":2016,"median":81.4,"p25":75.6,"p75":88.5,"min":57.6,"max":94.1,"feb_score":89.6,"feb_rank":5,"mar_score":69.9,"mar_rank":18},{"season":"2017/18","season_year":2017,"median":83.3,"p25":73.0,"p75":87.4,"min":53.7,"max":93.8,"feb_score":93.8,"feb_rank":1,"mar_score":81.1,"mar_rank":12},{"season":"2018/19","season_year":2018,"median":79.4,"p25":43.1,"p75":86.5,"min":23.3,"max":95.2,"feb_score":95.0,"feb_rank":2,"mar_score":28.6,"mar_rank":19},{"season":"2019/20","season_year":2019,"median":81.7,"p25":74.6,"p75":86.8,"min":58.3,"max":92.0,"feb_score":90.2,"feb_rank":3,"mar_score":74.6,"mar_rank":16},{"season":"2020/21","season_year":2020,"median":80.0,"p25":71.4,"p75":85.8,"min":56.2,"max":91.9,"feb_score":71.4,"feb_rank":16,"mar_score":67.8,"mar_rank":19},{"season":"2021/22","season_year":2021,"median":84.6,"p25":80.1,"p75":86.5,"min":71.3,"max":92.1,"feb_score":88.2,"feb_rank":4,"mar_score":81.1,"mar_rank":15},{"season":"2022/23","season_year":2022,"median":80.2,"p25":75.0,"p75":86.1,"min":50.1,"max":91.2,"feb_score":86.7,"feb_rank":5,"mar_score":73.9,"mar_rank":17},{"season":"2023/24","season_year":2023,"median":83.2,"p25":66.0,"p75":85.1,"min":18.8,"max":91.4,"feb_score":83.2,"feb_rank":11,"mar_score":18.8,"mar_rank":21},{"season":"2024/25","season_year":2024,"median":82.5,"p25":68.9,"p75":89.1,"min":37.2,"max":93.9,"feb_score":77.9,"feb_rank":15,"mar_score":79.8,"mar_rank":12},{"season":"2025/26","season_year":2025,"median":70.4,"p25":44.6,"p75":78.9,"min":20.3,"max":88.4,"feb_score":72.0,"feb_rank":9,"mar_score":25.8,"mar_rank":20}];
+new Chart(document.getElementById('rankingChart'), {
+  type: 'bar',
+  data: {
+    labels: RD.map(d => d.season),
+    datasets: [
+      { label: 'Season range (all tours)', data: RD.map(d => [d.min, d.max]),
+        type: 'bar', backgroundColor: 'rgba(200,200,200,0.25)', borderWidth: 0,
+        barPercentage: 0.8 },
+      { label: '25th-75th %ile', data: RD.map(d => [d.p25, d.p75]),
+        type: 'bar', backgroundColor: 'rgba(180,180,180,0.3)', borderWidth: 0,
+        barPercentage: 0.5 },
+      { label: 'Feb #2512', data: RD.map(d => d.feb_score || null),
+        type: 'line', borderColor: '#ff6b6b', backgroundColor: '#ff6b6b',
+        pointRadius: 6, pointHoverRadius: 8, borderWidth: 2, fill: false, tension: 0 },
+      { label: 'Mar #2516', data: RD.map(d => d.mar_score || null),
+        type: 'line', borderColor: '#4ecdc4', backgroundColor: '#4ecdc4',
+        pointRadius: 6, pointHoverRadius: 8, borderWidth: 2, fill: false, tension: 0 },
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { display: true, position: 'bottom' },
+               tooltip: { callbacks: { label: function(ctx) {
+                 const d = RD[ctx.dataIndex];
+                 if (ctx.datasetIndex === 2) return 'Feb: ' + d.feb_score + ' (rank ' + d.feb_rank + '/21)';
+                 if (ctx.datasetIndex === 3) return 'Mar: ' + d.mar_score + ' (rank ' + d.mar_rank + '/21)';
+                 return ctx.dataset.label;
+               }}}},
+    scales: { y: { min: 0, max: 100, title: { display: true, text: 'Score' } },
+              x: { ticks: { maxRotation: 45 } } }
+  }
+});
+</script>
+
+<p>#2512 ranks 6th out of 21 tours on average (top quartile). #2516 ranks 17th (bottom quartile). In 21 recent seasons, <strong>#2516 has never once cracked the top 5</strong>. It's been the worst or second-worst tour of the season 52% of the time.</p>
+
+<h2>Can You Predict a Bad Year?</h2>
+
+<h3>ENSO (El Nino / La Nina)</h3>
+<p>Weak predictor. La Nina seasons score slightly better (median 78.4 for March) than El Nino (73.8), but it's not statistically significant (p=0.35). Two of the three recent March disasters (2018/19 and 2023/24) were El Nino years, but 2025/26 was neutral. You can't use ENSO to confidently dodge a bad year.</p>
+
+<h3>Bad Luck vs Bad Month</h3>
+<p>About half the bad March seasons were <strong>timing-specific</strong> (the week before was fine), half were <strong>the whole month being terrible</strong>:</p>
+
+<table>
+<tr><th>Season</th><th>#2516 score</th><th>#2515 score (week before)</th><th>Verdict</th></tr>
+<tr><td>2023/2024</td><td>18.8</td><td>66.0</td><td>Bad luck (week before was OK)</td></tr>
+<tr><td>2018/2019</td><td>28.6</td><td>79.4</td><td>Bad luck (week before was Good)</td></tr>
+<tr><td>2025/2026</td><td>25.8</td><td>27.9</td><td>Whole month bad</td></tr>
+</table>
+
+<p>When #2516 is bad, #2515 (one week earlier) averages 25 points higher. Being there Mar 10-16 instead of Mar 16-22 would have dodged the worst in ~half the failure years. The week after (#2517) is less reliably better, because warm events tend to persist or worsen through late March.</p>
+
 <h2>What Climate Might Be Doing</h2>
 
 <h3>What Our Data Shows (and Doesn't)</h3>
