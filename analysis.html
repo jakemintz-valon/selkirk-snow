@@ -41,14 +41,28 @@ a { color: var(--teal); }
 <div class="container">
 
 <h1>What to Expect from March at Selkirk</h1>
-<p class="subtitle">36 seasons of mountain weather data (1989-2026). Scores reflect best available terrain each day, because that's what guides always pick.</p>
+<p class="subtitle">67 seasons of mountain weather data (1959-2026). Scores reflect best available terrain each day, because that's what guides always pick.</p>
 
 <div class="callout">
-<strong>The bottom line:</strong> February is the safer bet. It wins 75% of seasons all-time and 90% in the last decade. March meets a "good trip" threshold only 60% of the last 10 years, with 4 failures in 10 seasons. The gap is real, and recent trends are making it worse.
+<strong>The bottom line:</strong> Feb is a 100% good trip in the last decade. Mar is good 45% and bad 27%. The question isn't whether March CAN be great (it can) but whether you're OK with a 27% chance of a bad trip.
 </div>
 
 <h2>The Question</h2>
 <p>Selkirk Snowcat Skiing runs 21 tours per season from December through April. I switched from Tour #2512 (February 20-26) to Tour #2516 (March 16-22). After a terrible March trip in 2025/26, I wanted to know: is March really worse, or did I just get unlucky?</p>
+
+<h2>Quality Tiers</h2>
+<p>The model produces a composite score for each day. Here's what the numbers mean in terms of actual skiing experience:</p>
+
+<table>
+<tr><th>Score</th><th>Tier</th><th>What it feels like</th></tr>
+<tr><td><strong>90+</strong></td><td>Epic</td><td>Multiple powder days, cold temps preserve everything, full terrain. Ski pow 4-5 days.</td></tr>
+<tr><td><strong>80-90</strong></td><td>Great</td><td>2-3 powder days plus well-preserved older snow. Surfaces stay soft. Most terrain open.</td></tr>
+<tr><td><strong>70-80</strong></td><td>Good</td><td>1-2 fresh days, rest older but skiable. OR big snow with avi restrictions. Guides find good terrain but compromise visible.</td></tr>
+<tr><td><strong>60-70</strong></td><td>Good enough</td><td>Limited fresh, some warm days, crust forming. Still cat skiing, still fun, but you think about what could have been.</td></tr>
+<tr><td><strong>&lt;60</strong></td><td>Bad trip</td><td>Rain at elevation, snowpack destroyed, or extreme avi danger. Operations curtailed.</td></tr>
+</table>
+
+<p>The key thresholds: 70+ is a good trip (solid skiing). 60-70 is good enough (worth going, you notice compromises). Below 60 is a bad trip.</p>
 
 <h2>How the Model Works</h2>
 <p>The model scores each day using a <strong>gated multiplicative</strong> approach. Components aren't interchangeable: you can't make up for zero snow with great safety.</p>
@@ -56,43 +70,38 @@ a { color: var(--teal); }
 <li><strong>Snow quality</strong> = best of fresh snow (48h) or preserved older snow (discounted 15%). You need one or the other for good skiing.</li>
 <li><strong>Safety</strong> acts as a terrain access multiplier. Great powder on HIGH danger terrain gets crushed (0.4-0.7x). Low danger = full score.</li>
 <li><strong>Base depth</strong> is a gate. Below 50% adequacy, score drops linearly. Above that, it doesn't matter.</li>
-<li><strong>Crystal quality</strong> is a minor adjustment (±10%).</li>
+<li><strong>Crystal quality</strong> is a minor adjustment (+/-10%).</li>
 </ul>
-<p>Scores reflect best available terrain: guides pick the optimal zone each day (Peak north face, A-Frame north trees, A-Frame average, or Lodge trees). The floor is set at <strong>75</strong>, calibrated to my worst good February trip (85.8), with a margin for "I'd still be happy with decent snow, good stability, and good preservation."</p>
 
-<h2>All-Time: 36 Seasons (1989-2026)</h2>
+<h2>All-Time: 67 Seasons (1959-2026)</h2>
 
 <div class="stat-grid">
 <div class="stat-box feb">
 <div class="label">Tour #2512 (Feb 20-26)</div>
-<div class="big feb">87.1</div>
+<div class="big feb">80.6</div>
 <div class="label">Median Score</div>
 </div>
 <div class="stat-box mar">
 <div class="label">Tour #2516 (Mar 16-22)</div>
-<div class="big mar">82.8</div>
+<div class="big mar">76.8</div>
 <div class="label">Median Score</div>
 </div>
 </div>
 
 <table>
 <tr><th></th><th>Feb #2512</th><th>Mar #2516</th></tr>
-<tr><td>Median score</td><td>87.1</td><td>82.8</td></tr>
-<tr><td>Best season</td><td>95.5 (2010/11)</td><td>95.5 (2001/02)</td></tr>
-<tr><td>Worst season</td><td>57.8 (2011/12)</td><td>15.4 (2023/24)</td></tr>
-<tr><td>25th-75th percentile</td><td>84.2 - 90.2</td><td>72.5 - 86.6</td></tr>
-<tr><td>Feb wins</td><td colspan="2">27 of 36 seasons (75%)</td></tr>
-<tr><td>Meets floor (75)</td><td>89%</td><td>69%</td></tr>
-<tr><td>Avg temp at A-Frame</td><td>-8.8C</td><td>-4.3C</td></tr>
-<tr><td>Days above 0C per tour</td><td>0.6</td><td>2.1</td></tr>
+<tr><td>Median score</td><td>80.6</td><td>76.8</td></tr>
+<tr><td>Good+ rate (>=70)</td><td>81%</td><td>61%</td></tr>
+<tr><td>Bad trip rate (&lt;60)</td><td>9%</td><td>16%</td></tr>
+<tr><td>Feb wins</td><td colspan="2">70% of seasons</td></tr>
 </table>
 
-<p>February wins 75% of seasons. Its tight IQR (84-90) means consistently good. March has nearly the same ceiling (95.5 vs 95.5) but the floor collapses: 15.4 vs 57.8. March fails to meet the "good trip" bar 31% of the time all-time.</p>
+<p>February wins 70% of seasons. Its good+ rate (81%) means you almost always get a solid trip. March meets the good bar only 61% of the time, with a 16% bad trip rate across the full record.</p>
 
-<h2>Last 10 Years: Worse Than All-Time</h2>
+<h2>Last 10 Years: The Gap Is Widening</h2>
 
 <div class="warning">
-<strong>The recent decade is harder on March.</strong> February wins 90% of recent seasons. March meets the floor only 60% of the time, with 4 failures in 10 seasons. The gap between Feb and Mar is widening.
+<strong>The recent decade is much harder on March.</strong> February has been 100% good+, 0% bad in the last 10 years. March is good only 45% of the time, with a 27% bad trip rate. Feb wins ~90%.
 </div>
 
 <div class="stat-grid">
@@ -103,28 +112,35 @@ a { color: var(--teal); }
 </div>
 <div class="stat-box mar">
 <div class="label">Mar #2516 (last 10)</div>
-<div class="big mar">82.6</div>
+<div class="big mar">73.9</div>
 <div class="label">Median Score</div>
 </div>
 </div>
 
 <table>
 <tr><th></th><th>Feb (10yr)</th><th>Mar (10yr)</th></tr>
-<tr><td>Median score</td><td>86.6</td><td>82.6</td></tr>
-<tr><td>Best season</td><td>95.4 (2018/19)</td><td>91.2 (2017/18)</td></tr>
-<tr><td>Worst season</td><td>71.1 (2025/26)</td><td>15.4 (2023/24)</td></tr>
-<tr><td>25th-75th percentile</td><td>81.7 - 92.5</td><td>45.3 - 86.0</td></tr>
-<tr><td>Feb wins</td><td colspan="2">9 of 10 seasons (90%)</td></tr>
-<tr><td>Meets floor (75)</td><td>90%</td><td>60%</td></tr>
-<tr><td>Avg temp at A-Frame</td><td>-9.9C</td><td>-3.0C</td></tr>
-<tr><td>Avg snowfall per tour</td><td>33 cm</td><td>17 cm</td></tr>
+<tr><td>Median score</td><td>86.6</td><td>73.9</td></tr>
+<tr><td>Good+ rate (>=70)</td><td>100%</td><td>45%</td></tr>
+<tr><td>Bad trip rate (&lt;60)</td><td>0%</td><td>27%</td></tr>
+<tr><td>Feb wins</td><td colspan="2">~90% of seasons</td></tr>
 </table>
 
-<p>March's 25th percentile plunges to 45.3, meaning 1 in 4 recent March trips is a near write-off. February's worst recent season (71.1 in 2025/26) is still close to the floor. The 4 March failures: 2015/16 (72.7), 2018/19 (36.1), 2023/24 (15.4), 2025/26 (25.3).</p>
+<p>February hasn't produced a bad trip in the last decade. March is nearly a coin flip for a good trip, and more than 1 in 4 recent March trips have been bad. The gap is real and widening.</p>
 
 <div class="insight">
-<strong>March is bimodal.</strong> The last 10 March seasons split cleanly: six scored 82-91 (great), four scored 15-73 (fail). There's nothing in between. When March works, it's excellent. When it doesn't, it fails hard.
+<strong>March is bimodal.</strong> Recent March seasons split cleanly: when it works, it's excellent. When it doesn't, it fails hard. There's not much in between.
 </div>
+
+<h2>Jake's Trips</h2>
+
+<table>
+<tr><th>Trip</th><th>Score</th><th>Tier</th></tr>
+<tr><td>7 February trips</td><td>83.2 - 95.0</td><td>3 Epic, 4 Great</td></tr>
+<tr><td>Good March (2024/25)</td><td>79.8</td><td>Good</td></tr>
+<tr><td>Bad March (2025/26)</td><td>25.8</td><td>Bad</td></tr>
+</table>
+
+<p>Every February trip has been Great or better. The one good March was Good (79.8), not Great. The bad March (25.8) was catastrophic.</p>
 
 <h2>Why March Fails (When It Does)</h2>
 
@@ -135,13 +151,13 @@ a { color: var(--teal); }
 <strong>March:</strong> Snow falls at -5C. Most days that's fine. But 2-3 days per tour push A-Frame above 0C. One warm day creates a melt-freeze crust. One rain event can destroy the snowpack in hours.
 </div>
 
-<p>With the multiplicative model, the worst Februaries are actually <em>too much snow</em> seasons: 2011/12 had 78cm but safety of 34 (HIGH danger), so the terrain multiplier crushed the score to 57.8. Guides couldn't access the steep goods. March failures are different: warm events that destroy the snowpack entirely, leaving no terrain escape.</p>
+<p>With the multiplicative model, the worst Februaries are actually <em>too much snow</em> seasons: heavy loading with HIGH danger, so the terrain multiplier crushes the score. Guides can't access the steep goods. March failures are different: warm events that destroy the snowpack entirely, leaving no terrain escape.</p>
 
 <h2>What Climate Might Be Doing</h2>
 
 <h3>What Our Data Shows (and Doesn't)</h3>
 
-<p>The 36-season station record is suggestive but statistically inconclusive. Running regressions on March temperature, snowfall, and quality scores produces nothing significant:</p>
+<p>The station record is suggestive but statistically inconclusive. Running regressions on March temperature, snowfall, and quality scores produces nothing significant:</p>
 
 <table>
 <tr><th>Variable</th><th>Trend per decade</th><th>R-squared</th><th>p-value</th></tr>
@@ -150,7 +166,7 @@ a { color: var(--teal); }
 <tr><td>March snowfall</td><td>+2.9 cm</td><td>--</td><td>0.68</td></tr>
 </table>
 
-<p>None of these trends are distinguishable from noise. The decade-by-decade failure rate (March tours scoring below 75) is non-monotonic:</p>
+<p>None of these trends are distinguishable from noise. The decade-by-decade failure rate (March tours scoring below the good threshold) is non-monotonic:</p>
 
 <table>
 <tr><th>Decade</th><th>March failure rate</th><th>March mean temp</th><th>Days above 0C</th></tr>
@@ -189,8 +205,8 @@ a { color: var(--teal); }
 <h2>What to Expect</h2>
 
 <div class="insight">
-<strong>Good March (~60% of recent seasons):</strong> A cold pattern holds. Temps stay below -5C at A-Frame. Storms cycle through normally. Guides route to north faces where snow quality is excellent. Scores land in the 82-91 range. The best March trips rival the best of any month.<br><br>
-<strong>Bad March (~40% of recent seasons):</strong> A warm event pushes the rain/snow line above A-Frame. Snowpack degrades fast. HIGH avalanche danger closes steep terrain. Scores drop below 73 with no middle ground. 2018/19 (36.1), 2023/24 (15.4), and 2025/26 (25.3) are this pattern.
+<strong>Good March (~45% of recent seasons):</strong> A cold pattern holds. Temps stay below -5C at A-Frame. Storms cycle through normally. Guides route to north faces where snow quality is excellent. Scores land in the 70-91 range. The best March trips rival the best of any month.<br><br>
+<strong>Bad March (~27% of recent seasons):</strong> A warm event pushes the rain/snow line above A-Frame. Snowpack degrades fast. HIGH avalanche danger closes steep terrain. Scores drop below 60 with no middle ground. Rain at elevation, snowpack destroyed, or extreme avi danger. Operations curtailed.
 </div>
 
 <h3>Signs of a Bad March</h3>
@@ -209,7 +225,7 @@ a { color: var(--teal); }
 <div class="footer">
 <a href="index.html">Interactive model</a> | <a href="detail.html">Day-by-day breakdown</a><br><br>
 Data: PCIC (London Ridge Low, Lardeau High), Open-Meteo ERA5, Revelstoke Resort,<br>
-Avalanche Canada, Environment Canada. 36 seasons (1989-2026).<br>
+Avalanche Canada, Environment Canada. 67 seasons (1959-2026).<br>
 Model: github.com/jakemintz-valon/selkirk-snow
 </div>
 
