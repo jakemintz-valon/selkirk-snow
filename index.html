@@ -340,12 +340,17 @@ function getThresholds() {
 }
 
 function dayComposite(d, w) {
-  // If best-terrain score is available (aframe view), use it.
-  // Guides always pick the best zone each day: Peak N, AF N trees, AF avg, or Lodge trees.
-  // The bt score accounts for north-face bonuses and avi-restricted penalties.
-  if (d.bt != null && currentElev === 'aframe') return d.bt;
-  return w.fresh * d.fresh + w.pres * d.pres + w.crystal * d.crystal +
-         w.base * d.base + w.safety * d.safety;
+  const base = w.fresh * d.fresh + w.pres * d.pres + w.crystal * d.crystal +
+               w.base * d.base + w.safety * d.safety;
+  // Best-terrain: guides pick the optimal zone each day.
+  // bt is the pre-computed score with default weights. Scale proportionally
+  // when user adjusts sliders so the terrain bonus tracks weight changes.
+  if (d.bt != null && currentElev === 'aframe') {
+    const defaultBase = 0.30*d.fresh + 0.30*d.pres + 0.10*d.crystal + 0.10*d.base + 0.20*d.safety;
+    if (defaultBase > 0) return d.bt * (base / defaultBase);
+    return d.bt;
+  }
+  return base;
 }
 
 function classifyDay(d, w, th) {

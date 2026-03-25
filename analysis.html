@@ -17,6 +17,7 @@ p { margin: 10px 0; font-size: 15px; }
 .callout { background: var(--teal); color: white; padding: 18px 22px; border-radius: 8px; margin: 20px 0; font-size: 16px; }
 .callout strong { color: var(--mint); }
 .insight { background: #f0f8f7; border-left: 4px solid var(--mint); padding: 14px 18px; margin: 16px 0; font-size: 14px; }
+.warning { background: #fff5f5; border-left: 4px solid var(--coral); padding: 14px 18px; margin: 16px 0; font-size: 14px; }
 table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
 th { background: var(--teal); color: white; padding: 8px 12px; text-align: left; }
 td { padding: 7px 12px; border-bottom: 1px solid #e0e0e0; }
@@ -40,120 +41,125 @@ a { color: var(--teal); }
 <div class="container">
 
 <h1>What to Expect from March at Selkirk</h1>
-<p class="subtitle">A data-driven analysis of snow quality and conditions across 36 seasons, with a focus on understanding what makes March different from midwinter.</p>
+<p class="subtitle">36 seasons of mountain weather data (1989-2026). Scores reflect best available terrain, because that's what guides always pick.</p>
 
 <div class="callout">
-<strong>The bottom line:</strong> March at Selkirk is great 86% of the time when guides pick the right terrain. It's different from February -- not worse on average, but more variable. When March works, the skiing rivals the best of midwinter. When it doesn't, the failure mode is a warm event that has no terrain escape. Understanding the pattern helps set the right expectations.
+<strong>The bottom line:</strong> Across 36 seasons, February and March are nearly tied when guides pick optimal terrain. But in the last 10 years, March has gotten meaningfully worse. February wins 70% of recent seasons, and March fails to meet a "good trip" threshold 30% of the time. The climate trend matters more than the all-time average.
 </div>
 
 <h2>The Question</h2>
-<p>Selkirk Snowcat Skiing runs 21 tours per season from December through April. I recently switched from Tour #2512 (February 20-26) to Tour #2516 (March 16-22). After a bad March trip in 2025/26, I wanted to understand what March actually looks like across many years: how does it differ from midwinter, what should I expect, and what does a bad March look like vs a good one?</p>
+<p>Selkirk Snowcat Skiing runs 21 tours per season from December through April. I switched from Tour #2512 (February 20-26) to Tour #2516 (March 16-22). After a bad March trip in 2025/26, I wanted to know: is March really worse, or did I just get unlucky?</p>
 
-<h2>The Data</h2>
-<p>I built a model using 36 seasons (1989-2026) of weather data from multiple sources:</p>
-<ul style="margin: 8px 0 8px 20px; font-size: 14px;">
-<li><strong>Open-Meteo ERA5 reanalysis</strong> at 2,529m grid elevation (temperature, snowfall, wind)</li>
-<li><strong>Lardeau High weather station</strong> at 2,518m, less than 1km from the summit (actual temperature and wind observations, 2015-2025)</li>
-<li><strong>Revelstoke Mountain Resort</strong> daily snowfall at 2,225m (13 seasons, calibrates the reanalysis snowfall which underestimates by 2.5x)</li>
-<li><strong>Avalanche Canada</strong> real danger ratings at 3 elevation bands (10 seasons)</li>
-<li><strong>Environment Canada</strong> valley stations for lower elevation conditions</li>
-</ul>
+<h2>How the Model Works</h2>
+<p>Scores reflect the best terrain available each day. Guides don't ski a fixed elevation. If it's only good up high, they go high. If trees are better, they stay in the trees. The model picks the best of four zones (Peak north, A-Frame north trees, A-Frame average, Lodge trees) each day, with penalties when avalanche danger restricts steep terrain.</p>
+<p>Components: fresh snowfall (30%), snow preservation (30%), crystal quality (10%), base depth (10%), avalanche safety (20%). Safety is trained on 1,293 days of real Avalanche Canada danger ratings.</p>
 
-<p>The model scores each day on five components: fresh snowfall (30%), snow preservation (30%), crystal quality (10%), base depth (10%), and avalanche safety (20%). The safety component is trained on 1,293 days of real avalanche danger ratings using machine learning.</p>
-
-<h2>February vs March: The Numbers</h2>
+<h2>All-Time: 36 Seasons (1989-2026)</h2>
 
 <div class="stat-grid">
 <div class="stat-box feb">
 <div class="label">Tour #2512 (Feb 20-26)</div>
-<div class="big feb">66.5</div>
+<div class="big feb">76.7</div>
 <div class="label">Median Score</div>
 </div>
 <div class="stat-box mar">
 <div class="label">Tour #2516 (Mar 16-22)</div>
-<div class="big mar">60.7</div>
+<div class="big mar">75.5</div>
 <div class="label">Median Score</div>
 </div>
 </div>
 
-<p>At A-Frame Ridge (1,900m), February's median score is 5.8 points higher. February wins in 61% of seasons. But the median doesn't tell the full story -- the variance does.</p>
-
-<h2>The Variance Story</h2>
-
 <table>
 <tr><th></th><th>Feb #2512</th><th>Mar #2516</th></tr>
-<tr><td>Median score</td><td>66.5</td><td>60.7</td></tr>
-<tr><td>Best season ever</td><td>75.8 (2020/21)</td><td>72.5 (2024/25)</td></tr>
-<tr><td>Worst season ever</td><td>42.7 (2025/26)</td><td>17.4 (2023/24)</td></tr>
-<tr><td>Avg temp at A-Frame</td><td>-10.1C</td><td>-5.4C</td></tr>
-<tr><td>Days above 0C per tour</td><td>0.3</td><td>2.2</td></tr>
+<tr><td>Median score</td><td>76.7</td><td>75.5</td></tr>
+<tr><td>Best season</td><td>83.6 (2020/21)</td><td>83.4 (1996/97)</td></tr>
+<tr><td>Worst season</td><td>60.2 (2025/26)</td><td>26.6 (2023/24)</td></tr>
+<tr><td>25th-75th percentile</td><td>69.7 - 79.1</td><td>67.3 - 79.0</td></tr>
+<tr><td>Feb wins</td><td colspan="2">17 of 36 seasons (47%)</td></tr>
+<tr><td>Meets floor (58)</td><td>100%</td><td>92%</td></tr>
+<tr><td>Avg temp at A-Frame</td><td>-8.8C</td><td>-4.3C</td></tr>
+<tr><td>Days above 0C per tour</td><td>0.6</td><td>2.1</td></tr>
 </table>
 
-<p>February's worst (42.7) is mediocre but skiable. March's worst (17.4) is a write-off. The best of both are nearly identical -- when March works, it's as good as February. The difference is the downside.</p>
+<p>The all-time picture looks nearly even. The gap is just 1.2 points, and March wins slightly more often. March's best seasons rival February's best. The difference is the downside: February's worst (60.2) is still above the floor. March's worst (26.6) is a write-off.</p>
+
+<h2>Last 10 Years: A Different Story</h2>
+
+<div class="warning">
+<strong>The recent decade tells a starkly different story.</strong> March has gotten meaningfully worse. Whether this is a climate trend or a decade-long fluctuation, the last 10 years are the most relevant for setting expectations about next year.
+</div>
+
+<div class="stat-grid">
+<div class="stat-box feb">
+<div class="label">Feb #2512 (last 10)</div>
+<div class="big feb">76.5</div>
+<div class="label">Median Score</div>
+</div>
+<div class="stat-box mar">
+<div class="label">Mar #2516 (last 10)</div>
+<div class="big mar">66.4</div>
+<div class="label">Median Score</div>
+</div>
+</div>
+
+<table>
+<tr><th></th><th>Feb (10yr)</th><th>Mar (10yr)</th></tr>
+<tr><td>Median score</td><td>76.5</td><td>66.4</td></tr>
+<tr><td>Best season</td><td>83.6 (2020/21)</td><td>80.2 (2021/22)</td></tr>
+<tr><td>Worst season</td><td>60.2 (2025/26)</td><td>26.6 (2023/24)</td></tr>
+<tr><td>25th-75th percentile</td><td>74.6 - 78.6</td><td>45.6 - 75.6</td></tr>
+<tr><td>Feb wins</td><td colspan="2">7 of 10 seasons (70%)</td></tr>
+<tr><td>Meets floor (58)</td><td>100%</td><td>70%</td></tr>
+<tr><td>Avg temp at A-Frame</td><td>-9.9C</td><td>-3.0C</td></tr>
+<tr><td>Avg snowfall per tour</td><td>23.6 cm</td><td>13.8 cm</td></tr>
+</table>
+
+<p>February has been rock-solid: median 76.5, never below 60, tight IQR. March has blown up: median dropped from 75.5 (all-time) to 66.4, the 25th percentile plunged to 45.6, and 3 of the last 10 seasons fell below the floor. March is running almost 1.5C warmer than its all-time average, and getting nearly half the snowfall.</p>
+
+<div class="insight">
+<strong>The key numbers:</strong> Over 36 seasons, March meets the floor 92% of the time. In the last 10 years, that drops to 70%. February has met the floor 100% in both windows.
+</div>
 
 <h2>Why March Fails (When It Does)</h2>
 
-<p><strong>The conventional wisdom is that February gets more snow. That's barely true.</strong> At Selkirk's elevation, February and March receive similar snowfall (~2cm/day ERA5, ~5-6cm/day corrected). The Selkirk Mountains are in BC's interior wet belt -- storms keep coming through March.</p>
-
-<p><strong>The real difference is what happens after it snows.</strong> February averages -9.5C at the peak. March averages -5.7C. Both cold enough for snow to fall as snow. The difference is preservation:</p>
+<p>February and March receive similar snowfall over the full record. The difference is preservation. February averages -8.8C at A-Frame. March averages -4.3C, and in recent years -3.0C. Both are cold enough for snow to fall as snow. The question is whether it survives.</p>
 
 <div class="insight">
-<strong>February:</strong> Snow falls at -10C. Next day it's still -10C. Five days later, still powder. The crystals stay intact, the surface stays dry.<br><br>
-<strong>March:</strong> Snow falls at -6C. Most days that's fine. But 2-3 days per tour, the sun pushes A-Frame above 0C. One warm day creates a melt-freeze crust. One rain event can destroy the entire snowpack in hours.
+<strong>February:</strong> Snow falls at -10C. Five days later, still powder. Crystals stay intact, surface stays dry. Even February's warmest days rarely push A-Frame above freezing.<br><br>
+<strong>March:</strong> Snow falls at -5C. Most days that's fine. But 2-3 days per tour push A-Frame above 0C. One warm day creates a melt-freeze crust. One rain event can destroy the snowpack in hours. Even the best terrain can't escape this when the freezing level climbs above 2,000m.
 </div>
 
-<p>March's failure mode is binary. In 60% of years, a cold pattern holds and March performs like February. In 40%, a warm event hits. Your 2025/26 tour was a textbook failure: 44mm of rain at the valley on March 17, rain reaching A-Frame, snow depth crashing from 140cm to near zero, HIGH avalanche danger at all elevations for 5 straight days.</p>
+<p>March's failure mode is binary. When a cold pattern holds, March performs like February. When a warm event hits, there's no terrain escape. The guides can route to north-facing slopes at high elevation, but if rain reaches 2,000m+, the entire mountain is compromised.</p>
 
-<h2>The Terrain Selection Factor</h2>
+<h2>What Climate Might Be Doing</h2>
 
-<p>At Selkirk, guides choose where to ski each day. In March, they route to north-facing slopes at high elevation where snow persists longer. This terrain selection dramatically changes the equation.</p>
+<p>The last-10-year deterioration in March conditions is consistent with warming trends in BC's interior mountains. March 2016-2025 averaged -3.0C at A-Frame vs the all-time -4.3C. That 1.3C shift pushes more days across the critical 0C threshold where rain replaces snow and existing snowpack degrades rapidly. February, starting from -8.8C, has a much larger buffer before warming threatens conditions.</p>
 
-<table>
-<tr><th></th><th>A-Frame Average</th><th>Best Available Terrain</th></tr>
-<tr class="highlight"><td>Feb median</td><td>66.5</td><td><strong>75.3</strong></td></tr>
-<tr class="highlight-b"><td>Mar median</td><td>60.7</td><td><strong>72.4</strong></td></tr>
-<tr><td>Gap</td><td>5.8 points</td><td><strong>2.9 points</strong></td></tr>
-</table>
+<p>Whether this continues is unknowable from weather station data alone. But if the recent pattern persists, March carries more risk than the 36-season average suggests.</p>
 
-<p>The terrain premium in March (+11.7 points) is 2.5x larger than in February (+8.8) because aspect matters more when the sun is stronger. On a north face at Meadow Peak (2,560m), March conditions rival February.</p>
-
-<p><strong>But terrain can't overcome avalanche danger.</strong> When HIGH danger shuts down steep terrain, you're restricted to mellow runs. The model applies a 35% penalty for avi-restricted terrain -- good snow on terrain you can't ski doesn't count.</p>
-
-<h2>Your Floor for a Good Experience</h2>
-
-<p>I've been to Selkirk 8 times in 9 years. 6 February trips and 2 March trips. All but the 2025/26 March were good. My worst February (2023/24, score 58.1) was still a solid trip. That 58 is my floor for what I'd consider "worth it."</p>
-
-<table>
-<tr><th>Scenario</th><th>Feb meets floor</th><th>Mar meets floor</th></tr>
-<tr><td>A-Frame average</td><td>83%</td><td>56%</td></tr>
-<tr><td><strong>Best terrain (guide picks)</strong></td><td><strong>94%</strong></td><td><strong>86%</strong></td></tr>
-</table>
-
-<p>With optimal terrain selection, March meets my floor <strong>86% of the time</strong>. February meets it 94%. The 8% gap is the cost of the March gamble.</p>
-
-<h2>What to Expect from March</h2>
-
-<p>March at Selkirk has two modes. Understanding which one you're in -- sometimes before you arrive, sometimes on day one -- shapes the right expectations.</p>
+<h2>What to Expect</h2>
 
 <div class="insight">
-<strong>Good March (~86% of seasons):</strong> A cold pattern holds. Temperatures stay below -5C at A-Frame. Storms cycle through with similar frequency to midwinter. The guides route you to north faces and high elevation where snow quality is excellent. Longer days mean more skiing. The best March trips rival the best of any month.<br><br>
-<strong>Bad March (~14% of seasons):</strong> A warm event -- usually a Pacific atmospheric river -- pushes the rain/snow line above A-Frame (1,900m). This can destroy the snowpack in a single day. HIGH avalanche danger closes steep terrain at all elevations. The lodge trees are warm and wet. There's no terrain escape. 2025/26 was this scenario.
+<strong>Good March (~70% of recent seasons):</strong> A cold pattern holds. Temps stay below -5C at A-Frame. Storms cycle through normally. Guides route to north faces and high elevation where conditions are excellent. Longer days mean more skiing. The best March trips rival the best of any month.<br><br>
+<strong>Bad March (~30% of recent seasons):</strong> A warm event pushes the rain/snow line above A-Frame. Snowpack degrades fast. HIGH avalanche danger closes steep terrain at all elevations. There's no terrain escape. 2023/24 (score 26.6) and 2025/26 are this scenario.
 </div>
-
-<p>The key difference from February isn't average conditions -- it's the existence of this failure mode. February almost never gets warm enough for rain at A-Frame (-9.5C average vs March's -5.7C). Even a warm February stays below the critical threshold. March is usually fine, but when the pattern shifts, it shifts hard.</p>
-
-<h3>What Makes a Good March Trip</h3>
-<p>In the good 86%, March offers distinct advantages: longer days (more vertical), spring energy, dramatic alpine conditions, and often big late-season storms that load the upper mountain with fresh cold snow. The guides' terrain selection matters more than in midwinter -- they route to north-facing slopes at high elevation where the sun hasn't touched, and the skiing quality there equals February's best.</p>
 
 <h3>Signs of a Bad March</h3>
-<p>Watch the freezing level forecast. When it climbs above 2,000m during a precipitation event, that's rain at A-Frame. The damage is immediate (hours, not days) and the recovery requires sustained cold plus new snow. If the 5-day forecast shows multiple warm-precipitation events, set expectations accordingly: you'll be skiing, but it'll be spring conditions on restricted terrain, not powder.</p>
+<p>Watch the freezing level forecast the week before your trip. When it climbs above 2,000m during a precipitation event, that's rain at A-Frame. The damage is immediate (hours, not days) and recovery requires sustained cold plus new snow. If the 5-day forecast shows multiple warm-precipitation events, adjust expectations accordingly.</p>
 
-<h2>What I Can't Predict</h2>
-<p>This model uses 36 seasons of historical weather patterns. It can't tell you whether your specific March trip will fall in the 86% or the 14%. What it can tell you is the base rate and what to look for. The week before arrival, check the Avalanche Canada forecast and the freezing level. If the pattern is cold, expect great skiing. If a warm event is incoming, set expectations for a different kind of trip -- and appreciate the terrain the guides can still find.</p>
+<h2>The Data Behind This</h2>
+<p>The model uses multiple station sources, prioritizing actual observations over reanalysis where available:</p>
+<ul style="margin: 8px 0 8px 20px; font-size: 14px;">
+<li><strong>London Ridge Low</strong> (2,070m, PCIC station): Primary A-Frame data source. Actual temperature, snowfall, and wind observations with only 170m of elevation adjustment needed. 35 years of data (1990-2025).</li>
+<li><strong>Open-Meteo ERA5 reanalysis</strong> (2,529m grid): Fills gaps where London Ridge Low has no data, and serves as the primary source for Peak elevation.</li>
+<li><strong>Revelstoke Mountain Resort</strong> daily snowfall at 2,225m (13 seasons): Calibrates ERA5 snowfall, which underestimates by 2.5x in complex terrain.</li>
+<li><strong>Avalanche Canada</strong> real danger ratings at 3 elevation bands (1,293 days across 10 seasons): Trains the ML safety model.</li>
+<li><strong>Environment Canada</strong> valley stations: Lodge elevation and valley baseline conditions.</li>
+</ul>
 
 <div class="footer">
 <a href="index.html">Interactive model with adjustable parameters</a> | <a href="detail.html">Day-by-day tour breakdown</a><br><br>
-Data: Open-Meteo ERA5, Lardeau MOTI stations (PCIC), Revelstoke Mountain Resort,<br>
+Data: London Ridge Low (PCIC), Open-Meteo ERA5, Revelstoke Mountain Resort,<br>
 Avalanche Canada, Environment Canada. 36 seasons (1989-2026).<br>
 Model: github.com/jakemintz-valon/selkirk-snow
 </div>
